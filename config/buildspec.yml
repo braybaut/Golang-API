@@ -23,6 +23,10 @@ phases:
         build:
         commands:
             - echo "Building the docker image.."
+            - echo "verify environments"
+            - printenv 
+            - echo "verify tag.."
+            - echo $CODEBUILD_WEBHOOK_BASE_REF
             - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
             - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG 
     post_build:
