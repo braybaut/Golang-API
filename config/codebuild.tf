@@ -22,7 +22,7 @@ resource "aws_iam_role" "code-build-library" {
 EOF
 }
 
-resource "aws_iam_role_policy" "example" {
+resource "aws_iam_role_policy" "s3-policy" {
   role = "${aws_iam_role.code-build-library.name}"
   policy = <<EOF
 {
@@ -105,19 +105,20 @@ resource "aws_codebuild_project" "library-build" {
     image                       = "aws/codebuild/standard:2.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
+privileged_mode = true
 
    environment_variable {
       name  = "AWS_DEFAULT_REGION"
-      value = "test"
+      value = "${var.AWS_REGION}"
     }
    environment_variable {
       name  = "AWS_ACCOUNT_ID"
-      value = "test"
+      value = "${var.AWS_ACCOUNT_ID}"
     }
 
     environment_variable {
-      name  = "AWS_REPO_NAME"
-      value = "test"
+      name  = "IMAGE_REPO_NAME"
+      value = "${var.IMAGE_REPO_NAME}"
     }
 
   }
@@ -138,7 +139,7 @@ resource "aws_codebuild_project" "library-build" {
     type            = "GITHUB"
     location        = "${var.URL_REPO}"
     git_clone_depth = 1
-    buildspec = "config/buildspec.yml"
+    buildspec = "${file("buildspec.yml")}"
   }
  
 }
@@ -165,4 +166,10 @@ resource "aws_codebuild_webhook" "library-webhook" {
 
 
   }
+}
+
+
+
+resource "aws_ecr_repository" "library-ecr" {
+  name = "${var.IMAGE_REPO_NAME}"
 }
