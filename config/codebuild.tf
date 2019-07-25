@@ -152,9 +152,16 @@ resource "aws_codebuild_webhook" "library-webhook" {
       pattern = "PUSH"
     }
 
-    filter {
+   filter {
       type = "HEAD_REF"
-      pattern = "master"
+      pattern = "^refs/tags/.*"
     }
+   filter {
+      type = "HEAD_REF"
+      pattern = "^refs/heads/.*"
+      exclude_matched_pattern = "true" 
+    }
+
+
   }
 }
