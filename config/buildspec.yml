@@ -16,7 +16,12 @@ phases:
     build:
         commands:
             - echo "Getting Tag.."
-            - export IMAGE_TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | cut -d "/" -f2) 
+            - |
+              if [ -z $CODEBUILD_SOURCE_VERSION ]; then  
+                export IMAGE_TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | cut -d "/" -f2)
+              else 
+                export IMAGE_TAG=$CODEBUILD_SOURCE_VERSION
+                fi 
             - echo "verify tag.."
             - echo $IMAGE_TAG 
             - echo "Building the docker image.."
