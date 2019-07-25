@@ -138,6 +138,7 @@ resource "aws_codebuild_project" "library-build" {
     type            = "GITHUB"
     location        = "${var.URL_REPO}"
     git_clone_depth = 1
+    buildspec = "config/buildspec.yml"
   }
  
 }
