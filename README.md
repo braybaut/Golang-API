@@ -1,4 +1,4 @@
-## Golang API
+## Continuous integration workflow with Codebuild and ECR for Golang APIs
 
 
 <p align="center">
