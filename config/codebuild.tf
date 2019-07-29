@@ -56,7 +56,7 @@ EOF
 
 
 resource "aws_iam_role_policy" "ecr-policy" {
-  role = "${aws_iam_role.code-build-library.name}"
+  role   = "${aws_iam_role.code-build-library.name}"
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -86,38 +86,38 @@ EOF
 
 
 resource "aws_codebuild_project" "library-build" {
-  name          = "library-build"
-  description   = "Easy build to generate docker image for Golang Applications"
+  name = "library-build"
+  description = "Easy build to generate docker image for Golang Applications"
   build_timeout = "5"
-  service_role  = "${aws_iam_role.code-build-library.arn}"
+  service_role = "${aws_iam_role.code-build-library.arn}"
 
   artifacts {
     type = "NO_ARTIFACTS"
   }
 
   cache {
-    type     = "S3"
+    type = "S3"
     location = "${aws_s3_bucket.library-build.bucket}"
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:2.0"
-    type                        = "LINUX_CONTAINER"
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image = "aws/codebuild/standard:2.0"
+    type = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
 privileged_mode = true
 
    environment_variable {
-      name  = "AWS_DEFAULT_REGION"
+      name = "AWS_DEFAULT_REGION"
       value = "${var.AWS_REGION}"
     }
    environment_variable {
-      name  = "AWS_ACCOUNT_ID"
+      name = "AWS_ACCOUNT_ID"
       value = "${var.AWS_ACCOUNT_ID}"
     }
 
     environment_variable {
-      name  = "IMAGE_REPO_NAME"
+      name = "IMAGE_REPO_NAME"
       value = "${var.IMAGE_REPO_NAME}"
     }
 
@@ -136,8 +136,8 @@ privileged_mode = true
   }
 
   source {
-    type            = "GITHUB"
-    location        = "${var.URL_REPO}"
+    type = "GITHUB"
+    location = "${var.URL_REPO}"
     git_clone_depth = 1
     buildspec = "${file("buildspec.yml")}"
   }
@@ -161,7 +161,7 @@ resource "aws_codebuild_webhook" "library-webhook" {
    filter {
       type = "HEAD_REF"
       pattern = "^refs/heads/.*"
-      exclude_matched_pattern = "true" 
+      exclude_matched_pattern = "true"
     }
 
 
